@@ -1,9 +1,12 @@
 import qs from 'querystring'
 
+import { useEffect, useState } from 'react'
+
 import { useQuery } from '@apollo/client'
-import { Card, Checkbox, Container, Input, Text } from '@nextui-org/react'
+import { Card, Checkbox, Col, Container, Input, Text } from '@nextui-org/react'
 import { startOfDay, subDays, subMonths } from 'date-fns'
 import { NextPage } from 'next'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Select from 'react-select'
 
@@ -25,24 +28,25 @@ const dateOptions = [
     label: 'All time'
   },
   {
-    value: startOfDay(subDays(new Date(), 7)),
+    value: startOfDay(subDays(new Date(), 7)).toISOString(),
     label: 'Last 7 days'
   },
   {
-    value: startOfDay(subDays(new Date(), 30)),
+    value: startOfDay(subDays(new Date(), 30)).toISOString(),
     label: 'Last 30 days'
   },
   {
-    value: startOfDay(subMonths(new Date(), 6)),
+    value: startOfDay(subMonths(new Date(), 6)).toISOString(),
     label: 'Last 6 months'
   },
   {
-    value: startOfDay(subMonths(new Date(), 12)),
+    value: startOfDay(subMonths(new Date(), 12)).toISOString(),
     label: 'Last 12 months'
   }
 ]
 
 const GameFilter: NextPage = () => {
+  const [isMounted, setIsMounted] = useState(false)
   const { query } = useRouter()
   const slug = query?.slug as string
 
@@ -53,6 +57,10 @@ const GameFilter: NextPage = () => {
     variables: { slug },
     skip: !slug
   })
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const { data: genresResponse } = useQuery<GenresResponse>(ALL_GENRES)
 
@@ -70,12 +78,11 @@ const GameFilter: NextPage = () => {
       ? ({} as GamesVariables)
       : (qs.parse(responseSlug || '') as GamesVariables)
 
-  const { data: _allGames } = useQuery<GamesResponse, GamesVariables>(GAMES, {
+  const { data: allGames } = useQuery<GamesResponse, GamesVariables>(GAMES, {
     variables: parsedQuery
   })
 
-  if (typeof document === 'undefined') return null
-  return (
+  return isMounted ? (
     <Container
       fluid
       display="flex"
@@ -87,7 +94,51 @@ const GameFilter: NextPage = () => {
       }}
     >
       <Text h1>Games</Text>
-      <Text as="pre">{JSON.stringify(gameFiltersResponse, null, 2)}</Text>
+
+      <Container display="flex" css={{ my: 52, gap: 16 }}>
+        {allGames?.games.data.map(game => {
+          const logoData = game.attributes.logo.data
+          return (
+            <Container
+              display="flex"
+              css={{
+                flexFlow: 'row',
+                p: 16,
+                gap: 24,
+                maxWidth: 500,
+                borderRadius: '$lg',
+                bg: '$accents0'
+              }}
+              key={game.id}
+            >
+              <Image
+                alt={game.attributes.name}
+                width={120}
+                height={120}
+                layout="intrinsic"
+                placeholder="blur"
+                style={{
+                  borderRadius: 16
+                }}
+                blurDataURL={logoData?.attributes.placeholder || ''}
+                src={logoData?.attributes.url || ''}
+              />
+              <Col>
+                <Text h3>{game.attributes.name}</Text>
+                <Text as="p" color="$gray700">
+                  {game.attributes.subtitle}
+                </Text>
+                <Text as="p" color="$gray700">
+                  Genres:{' '}
+                  {game.attributes.genres.data
+                    .map(genre => genre.attributes.name)
+                    .join(', ')}
+                </Text>
+              </Col>
+            </Container>
+          )
+        })}
+      </Container>
 
       <Card
         css={{
@@ -177,7 +228,7 @@ const GameFilter: NextPage = () => {
         </Container>
       </Card>
     </Container>
-  )
+  ) : null
 }
 
 export default GameFilter
