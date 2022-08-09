@@ -51,7 +51,9 @@ const useGameFilter = () => {
           rating: parsedQuery.rating
             ? parseFloat(parsedQuery.rating)
             : undefined,
-          date: parseISO(parsedQuery.date).toISOString()
+          date: parsedQuery.date
+            ? parseISO(parsedQuery.date).toISOString()
+            : undefined
         }
 
   const { data: allGames } = useQuery<GamesResponse, GamesVariables>(GAMES, {
