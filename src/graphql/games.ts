@@ -26,6 +26,7 @@ export const GAMES = gql`
           subtitle
           featured
           releaseDate
+          createdAt
           platforms {
             name
           }

@@ -1,6 +1,7 @@
 import qs from 'querystring'
 
 import { useQuery } from '@apollo/client'
+import { parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
 
 import { GAME_FILTERS } from '~/graphql/game_filters'
@@ -47,7 +48,10 @@ const useGameFilter = () => {
             ? !!parsedQuery.freeToPlay
             : undefined,
           featured: parsedQuery.featured ? !!parsedQuery.featured : undefined,
-          rating: parseFloat(parsedQuery.rating)
+          rating: parsedQuery.rating
+            ? parseFloat(parsedQuery.rating)
+            : undefined,
+          date: parseISO(parsedQuery.date).toISOString()
         }
 
   const { data: allGames } = useQuery<GamesResponse, GamesVariables>(GAMES, {

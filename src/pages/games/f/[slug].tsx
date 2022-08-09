@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Card, Checkbox, Col, Container, Input, Text } from '@nextui-org/react'
-import { startOfDay, subDays, subMonths } from 'date-fns'
+import { format, parseISO, startOfDay, subDays, subMonths } from 'date-fns'
 import { NextPage } from 'next'
 import Image from 'next/image'
 import Select from 'react-select'
@@ -96,6 +96,10 @@ const GameFilter: NextPage = () => {
                 </Text>
                 <Text color="$gray700">
                   Rating: {game.attributes.review.data?.attributes.rating}
+                </Text>
+                <Text color="$gray700">
+                  Date added:{' '}
+                  {format(parseISO(game.attributes.createdAt), 'dd MMM yyyy')}
                 </Text>
               </Col>
               {logoData && (

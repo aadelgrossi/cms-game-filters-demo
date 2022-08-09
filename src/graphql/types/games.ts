@@ -1,7 +1,7 @@
 import { Genre } from './genres'
 import { MultiContentType, SingleContentType } from './shared'
 
-export interface GamePlatform {
+interface GamePlatform {
   name: string
 }
 
@@ -17,6 +17,7 @@ interface Review {
 }
 export interface Game {
   id: string
+  createdAt: string
   name: string
   subtitle: string
   featured: boolean
