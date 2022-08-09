@@ -1,25 +1,12 @@
-import qs from 'querystring'
-
 import { useEffect, useState } from 'react'
 
-import { useQuery } from '@apollo/client'
 import { Card, Checkbox, Col, Container, Input, Text } from '@nextui-org/react'
 import { startOfDay, subDays, subMonths } from 'date-fns'
 import { NextPage } from 'next'
 import Image from 'next/image'
-import { useRouter } from 'next/router'
 import Select from 'react-select'
 
-import { GAME_FILTERS } from '~/graphql/game_filters'
-import { GAMES } from '~/graphql/games'
-import { ALL_GENRES } from '~/graphql/genres'
-import {
-  GameFilterResponse,
-  GameFilterVariables,
-  GamesResponse,
-  GamesVariables
-} from '~/graphql/types'
-import { GenresResponse } from '~/graphql/types/genres'
+import useGameFilter from '~/hooks/useGameFilter'
 import { dropdownStyles } from '~/styles/select'
 
 const dateOptions = [
@@ -47,40 +34,11 @@ const dateOptions = [
 
 const GameFilter: NextPage = () => {
   const [isMounted, setIsMounted] = useState(false)
-  const { query } = useRouter()
-  const slug = query?.slug as string
-
-  const { data: gameFiltersResponse } = useQuery<
-    GameFilterResponse,
-    GameFilterVariables
-  >(GAME_FILTERS, {
-    variables: { slug },
-    skip: !slug
-  })
+  const { allGames, allGenres } = useGameFilter()
 
   useEffect(() => {
     setIsMounted(true)
   }, [])
-
-  const { data: genresResponse } = useQuery<GenresResponse>(ALL_GENRES)
-
-  const allGenres =
-    genresResponse?.genres.data.map(genre => ({
-      value: genre.attributes.name,
-      label: genre.attributes.name
-    })) || []
-
-  const responseSlug =
-    gameFiltersResponse?.gamesFilters?.data[0]?.attributes?.query ?? ''
-
-  const parsedQuery =
-    slug === 'all' || !responseSlug
-      ? ({} as GamesVariables)
-      : (qs.parse(responseSlug || '') as GamesVariables)
-
-  const { data: allGames } = useQuery<GamesResponse, GamesVariables>(GAMES, {
-    variables: parsedQuery
-  })
 
   return isMounted ? (
     <Container
@@ -95,40 +53,56 @@ const GameFilter: NextPage = () => {
     >
       <Text h1>Games</Text>
 
-      <Container display="flex" css={{ my: 52, gap: 16 }}>
+      <Container
+        display="flex"
+        css={{
+          my: 50,
+          p: 0,
+          gap: 16
+        }}
+      >
         {allGames?.games.data.map(game => {
           const logoData = game.attributes.logo.data
           return (
             <Container
               display="flex"
+              justify="space-between"
               css={{
-                flexFlow: 'row',
                 p: 16,
-                gap: 24,
-                maxWidth: 500,
+                maxWidth: 450,
                 borderRadius: '$lg',
                 bg: '$accents0'
               }}
               key={game.id}
             >
-              <Col>
+              <Col
+                css={{
+                  width: 'max-content'
+                }}
+              >
                 <Text h3>{game.attributes.name}</Text>
-                <Text as="p" color="$gray700">
-                  {game.attributes.subtitle}
-                </Text>
-                <Text as="p" color="$gray700">
+                <Text color="$gray700">{game.attributes.subtitle}</Text>
+                <Text color="$gray700">
                   Genres:{' '}
                   {game.attributes.genres.data
                     .map(genre => genre.attributes.name)
                     .join(', ')}
                 </Text>
+                <Text color="$gray700">
+                  Platforms:{' '}
+                  {game.attributes.platforms
+                    .map(platform => platform.name)
+                    .join(', ')}
+                </Text>
+                <Text color="$gray700">
+                  Rating: {game.attributes.review.data?.attributes.rating}
+                </Text>
               </Col>
               {logoData && (
                 <Image
                   alt={game.attributes.name}
-                  width={120}
-                  height={120}
-                  layout="intrinsic"
+                  width={160}
+                  height={160}
                   placeholder="blur"
                   style={{
                     borderRadius: 16
