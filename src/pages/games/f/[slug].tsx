@@ -19,13 +19,15 @@ const GameFilter: NextPage = () => {
   const [isMounted, setIsMounted] = useState(false)
   const {
     allGames,
-    allGenres,
+    genresOptions,
     freeToPlay,
     setFreeToPlay,
     date,
     setDate,
     platforms,
-    setPlatforms
+    setPlatforms,
+    genres,
+    setGenres
   } = useGameFilter()
 
   useEffect(() => {
@@ -165,10 +167,17 @@ const GameFilter: NextPage = () => {
           />
           <Select
             isMulti
+            value={genresOptions.filter(option =>
+              genres?.includes(option.value)
+            )}
+            onChange={item => {
+              const value = (item as PlatformOption[]).map(opt => opt.value)
+              setGenres(value)
+            }}
             menuPortalTarget={document.body}
             styles={dropdownStyles}
             placeholder="Genres"
-            options={allGenres}
+            options={genresOptions}
           />
         </Container>
         <Container

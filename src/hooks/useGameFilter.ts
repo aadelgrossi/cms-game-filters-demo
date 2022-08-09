@@ -24,6 +24,7 @@ const useGameFilter = () => {
   const [freeToPlay, setFreeToPlay] = useState<boolean>()
   const [date, setDate] = useState<string>()
   const [platforms, setPlatforms] = useState<string[]>()
+  const [genres, setGenres] = useState<string[]>()
 
   const { data: gameFiltersResponse } = useQuery<
     GameFilterResponse,
@@ -34,7 +35,7 @@ const useGameFilter = () => {
   })
   const { data: genresResponse } = useQuery<GenresResponse>(ALL_GENRES)
 
-  const allGenres =
+  const genresOptions =
     genresResponse?.genres.data.map(genre => ({
       value: genre.attributes.name,
       label: genre.attributes.name
@@ -68,27 +69,33 @@ const useGameFilter = () => {
     if (parsedQuery.platforms && platforms === undefined) {
       setPlatforms(parsedQuery.platforms)
     }
-  }, [parsedQuery, freeToPlay, date, platforms])
+    if (parsedQuery.genres && genres === undefined) {
+      setGenres(parsedQuery.genres)
+    }
+  }, [parsedQuery, freeToPlay, date, platforms, genres])
 
   const { data: allGames } = useQuery<GamesResponse, GamesVariables>(GAMES, {
     variables: {
       ...variables,
       date,
       platforms: platforms?.length ? platforms : undefined,
+      genres: genres?.length ? genres : undefined,
       freeToPlay
     }
   })
 
   return {
     allGames,
-    allGenres,
+    genresOptions,
     variables,
     freeToPlay,
     setFreeToPlay,
     date,
     setDate,
     platforms,
-    setPlatforms
+    setPlatforms,
+    genres,
+    setGenres
   }
 }
 
