@@ -111,18 +111,6 @@ const GameFilter: NextPage = () => {
               }}
               key={game.id}
             >
-              <Image
-                alt={game.attributes.name}
-                width={120}
-                height={120}
-                layout="intrinsic"
-                placeholder="blur"
-                style={{
-                  borderRadius: 16
-                }}
-                blurDataURL={logoData?.attributes.placeholder || ''}
-                src={logoData?.attributes.url || ''}
-              />
               <Col>
                 <Text h3>{game.attributes.name}</Text>
                 <Text as="p" color="$gray700">
@@ -135,6 +123,20 @@ const GameFilter: NextPage = () => {
                     .join(', ')}
                 </Text>
               </Col>
+              {logoData && (
+                <Image
+                  alt={game.attributes.name}
+                  width={120}
+                  height={120}
+                  layout="intrinsic"
+                  placeholder="blur"
+                  style={{
+                    borderRadius: 16
+                  }}
+                  blurDataURL={logoData?.attributes.placeholder || ''}
+                  src={logoData?.attributes.url || ''}
+                />
+              )}
             </Container>
           )
         })}
