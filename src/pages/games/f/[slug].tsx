@@ -14,12 +14,14 @@ import { useRouter } from 'next/router'
 
 import { GAME_FILTERS } from '~/graphql/game_filters'
 import { GAMES } from '~/graphql/games'
+import { ALL_GENRES } from '~/graphql/genres'
 import {
   GameFilterResponse,
   GameFilterVariables,
   GamesResponse,
   GamesVariables
 } from '~/graphql/types'
+import { GenresResponse } from '~/graphql/types/genres'
 
 const GameFilter: NextPage = () => {
   const { query } = useRouter()
@@ -33,6 +35,11 @@ const GameFilter: NextPage = () => {
     skip: !slug
   })
 
+  const { data: genresResponse } = useQuery<GenresResponse>(ALL_GENRES)
+
+  const allGenres =
+    genresResponse?.genres.data.map(genre => genre.attributes.name) || []
+
   const responseSlug =
     gameFiltersResponse?.gamesFilters?.data[0]?.attributes?.query ?? ''
 
@@ -41,12 +48,9 @@ const GameFilter: NextPage = () => {
       ? ({} as GamesVariables)
       : (qs.parse(responseSlug || '') as GamesVariables)
 
-  const { data: gamesResponse } = useQuery<GamesResponse, GamesVariables>(
-    GAMES,
-    {
-      variables: parsedQuery
-    }
-  )
+  const { data: _allGames } = useQuery<GamesResponse, GamesVariables>(GAMES, {
+    variables: parsedQuery
+  })
 
   return (
     <Container
@@ -56,7 +60,6 @@ const GameFilter: NextPage = () => {
     >
       <Text h1>Games</Text>
       <Text as="pre">{JSON.stringify(gameFiltersResponse, null, 2)}</Text>
-      <Text as="pre">{JSON.stringify(gamesResponse?.games, null, 2)}</Text>
 
       <Card
         css={{
@@ -87,8 +90,8 @@ const GameFilter: NextPage = () => {
           <Dropdown>
             <Dropdown.Button flat>Genre</Dropdown.Button>
             <Dropdown.Menu>
-              {['Shooter', 'RPG', 'Strategy'].map(option => {
-                return <Dropdown.Item key={option}>{option}</Dropdown.Item>
+              {allGenres.map(genre => {
+                return <Dropdown.Item key={genre}>{genre}</Dropdown.Item>
               })}
             </Dropdown.Menu>
           </Dropdown>
