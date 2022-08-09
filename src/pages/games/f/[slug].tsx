@@ -2,6 +2,7 @@ import qs from 'querystring'
 
 import { useQuery } from '@apollo/client'
 import { Card, Checkbox, Container, Input, Text } from '@nextui-org/react'
+import { startOfDay, subDays, subMonths } from 'date-fns'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import Select from 'react-select'
@@ -17,6 +18,29 @@ import {
 } from '~/graphql/types'
 import { GenresResponse } from '~/graphql/types/genres'
 import { dropdownStyles } from '~/styles/select'
+
+const dateOptions = [
+  {
+    value: undefined,
+    label: 'All time'
+  },
+  {
+    value: startOfDay(subDays(new Date(), 7)),
+    label: 'Last 7 days'
+  },
+  {
+    value: startOfDay(subDays(new Date(), 30)),
+    label: 'Last 30 days'
+  },
+  {
+    value: startOfDay(subMonths(new Date(), 6)),
+    label: 'Last 6 months'
+  },
+  {
+    value: startOfDay(subMonths(new Date(), 12)),
+    label: 'Last 12 months'
+  }
+]
 
 const GameFilter: NextPage = () => {
   const { query } = useRouter()
@@ -119,24 +143,7 @@ const GameFilter: NextPage = () => {
             menuPortalTarget={document.body}
             styles={dropdownStyles}
             placeholder="Date added"
-            options={[
-              {
-                value: '2022-08-01',
-                label: 'Last 7 days'
-              },
-              {
-                value: '2022-07-01',
-                label: 'Last 30 days'
-              },
-              {
-                value: '2022-01-01',
-                label: 'Last 6 months'
-              },
-              {
-                value: '2021-08-01',
-                label: 'Last 12 months'
-              }
-            ]}
+            options={dateOptions}
           />
           <Select
             isMulti

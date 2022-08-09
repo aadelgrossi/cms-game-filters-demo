@@ -25,6 +25,10 @@ export const dropdownStyles: StylesConfig = {
     backgroundColor: '#444',
     borderRadius: 8
   }),
+  singleValue: styles => ({
+    ...styles,
+    color: '#ccc'
+  }),
   option: (styles, state) => ({
     ...styles,
     backgroundColor: state.isFocused

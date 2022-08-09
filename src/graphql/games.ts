@@ -5,6 +5,7 @@ export const GAMES = gql`
     $freeToPlay: Boolean
     $featured: Boolean
     $keywords: String
+    $date: Date
     $genres: [String!]
   ) {
     games(
@@ -13,6 +14,7 @@ export const GAMES = gql`
         featured: { eq: $featured }
         name: { containsi: $keywords }
         genres: { or: { name: { in: $genres } } }
+        createdAt: { gte: $date }
       }
     ) {
       data {
