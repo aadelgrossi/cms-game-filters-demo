@@ -1,9 +1,9 @@
 import { FC } from 'react'
 
+import { ApolloProvider } from '@apollo/client'
 import { NextUIProvider, createTheme } from '@nextui-org/react'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
-import { Provider } from 'urql'
 
 import client from '~/lib/client'
 
@@ -14,7 +14,7 @@ const darkTheme = createTheme({
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <NextUIProvider theme={darkTheme}>
-      <Provider value={client}>
+      <ApolloProvider client={client}>
         <Head>
           <title>Next.js Starter with NextUI</title>
           <meta
@@ -23,7 +23,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
           />
         </Head>
         <Component {...pageProps} />
-      </Provider>
+      </ApolloProvider>
     </NextUIProvider>
   )
 }

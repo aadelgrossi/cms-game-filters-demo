@@ -9,6 +9,7 @@ module.exports = {
     'standard',
     'prettier',
     'plugin:@typescript-eslint/recommended',
+    'plugin:@next/next/recommended',
     'plugin:prettier/recommended'
   ],
   parser: '@typescript-eslint/parser',
