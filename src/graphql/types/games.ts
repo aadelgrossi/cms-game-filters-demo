@@ -38,6 +38,7 @@ export interface GamesVariables {
   freeToPlay?: boolean
   featured?: boolean
   genres?: string[]
+  platforms?: string[]
   date?: string
   rating?: number
 }

@@ -23,6 +23,7 @@ const useGameFilter = () => {
 
   const [freeToPlay, setFreeToPlay] = useState<boolean>()
   const [date, setDate] = useState<string>()
+  const [platforms, setPlatforms] = useState<string[]>()
 
   const { data: gameFiltersResponse } = useQuery<
     GameFilterResponse,
@@ -42,7 +43,7 @@ const useGameFilter = () => {
   const rawQuery =
     gameFiltersResponse?.gamesFilters?.data[0]?.attributes?.query ?? ''
 
-  const parsedQuery = qs.parse(rawQuery || '') as Record<string, string>
+  const parsedQuery = qs.parse(rawQuery || '') as Record<string, any>
 
   const variables: GamesVariables =
     slug === 'all' || !rawQuery
@@ -64,12 +65,16 @@ const useGameFilter = () => {
     if (parsedQuery.date && date === undefined) {
       setDate(parseISO(parsedQuery.date).toISOString())
     }
-  }, [parsedQuery, freeToPlay, date])
+    if (parsedQuery.platforms && platforms === undefined) {
+      setPlatforms(parsedQuery.platforms)
+    }
+  }, [parsedQuery, freeToPlay, date, platforms])
 
   const { data: allGames } = useQuery<GamesResponse, GamesVariables>(GAMES, {
     variables: {
       ...variables,
       date,
+      platforms: platforms?.length ? platforms : undefined,
       freeToPlay
     }
   })
@@ -81,7 +86,9 @@ const useGameFilter = () => {
     freeToPlay,
     setFreeToPlay,
     date,
-    setDate
+    setDate,
+    platforms,
+    setPlatforms
   }
 }
 

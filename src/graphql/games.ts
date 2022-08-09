@@ -7,6 +7,7 @@ export const GAMES = gql`
     $keywords: String
     $date: DateTime
     $genres: [String!]
+    $platforms: [String!]
     $rating: Int
   ) {
     games(
@@ -17,6 +18,7 @@ export const GAMES = gql`
         genres: { or: { name: { in: $genres } } }
         createdAt: { gte: $date }
         review: { rating: { gt: $rating } }
+        platforms: { or: { name: { in: $platforms } } }
       }
     ) {
       data {

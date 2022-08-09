@@ -6,14 +6,27 @@ import { NextPage } from 'next'
 import Image from 'next/image'
 import Select from 'react-select'
 
-import { platformsOptions, DateOption, dateOptions } from '~/constants'
+import {
+  platformsOptions,
+  DateOption,
+  dateOptions,
+  PlatformOption
+} from '~/constants'
 import useGameFilter from '~/hooks/useGameFilter'
 import { dropdownStyles } from '~/styles/select'
 
 const GameFilter: NextPage = () => {
   const [isMounted, setIsMounted] = useState(false)
-  const { allGames, allGenres, freeToPlay, setFreeToPlay, date, setDate } =
-    useGameFilter()
+  const {
+    allGames,
+    allGenres,
+    freeToPlay,
+    setFreeToPlay,
+    date,
+    setDate,
+    platforms,
+    setPlatforms
+  } = useGameFilter()
 
   useEffect(() => {
     setIsMounted(true)
@@ -113,6 +126,13 @@ const GameFilter: NextPage = () => {
         <Container fluid justify="space-between" display="flex">
           <Select
             isMulti
+            value={platformsOptions.filter(option =>
+              platforms?.includes(option.value)
+            )}
+            onChange={item => {
+              const value = (item as PlatformOption[]).map(opt => opt.value)
+              setPlatforms(value)
+            }}
             menuPortalTarget={document.body}
             styles={dropdownStyles}
             placeholder="Platforms"
