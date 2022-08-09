@@ -27,6 +27,7 @@ export const GAMES = gql`
           featured
           releaseDate
           createdAt
+          freeToPlay
           platforms {
             name
           }

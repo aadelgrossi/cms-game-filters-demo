@@ -1,5 +1,7 @@
 import qs from 'querystring'
 
+import { useEffect, useState } from 'react'
+
 import { useQuery } from '@apollo/client'
 import { parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
@@ -18,6 +20,9 @@ import {
 const useGameFilter = () => {
   const { query } = useRouter()
   const slug = query?.slug as string
+
+  const [freeToPlay, setFreeToPlay] = useState<boolean>()
+  const [date, setDate] = useState<string>()
 
   const { data: gameFiltersResponse } = useQuery<
     GameFilterResponse,
@@ -44,23 +49,40 @@ const useGameFilter = () => {
       ? {}
       : {
           ...parsedQuery,
-          freeToPlay: parsedQuery.freeToPlay
-            ? !!parsedQuery.freeToPlay
-            : undefined,
           featured: parsedQuery.featured ? !!parsedQuery.featured : undefined,
           rating: parsedQuery.rating
             ? parseFloat(parsedQuery.rating)
-            : undefined,
-          date: parsedQuery.date
-            ? parseISO(parsedQuery.date).toISOString()
             : undefined
         }
 
+  useEffect(() => {
+    if (!parsedQuery) return
+
+    if (parsedQuery.freeToPlay && freeToPlay === undefined) {
+      setFreeToPlay(!!parsedQuery.freeToPlay)
+    }
+    if (parsedQuery.date && date === undefined) {
+      setDate(parseISO(parsedQuery.date).toISOString())
+    }
+  }, [parsedQuery, freeToPlay, date])
+
   const { data: allGames } = useQuery<GamesResponse, GamesVariables>(GAMES, {
-    variables
+    variables: {
+      ...variables,
+      date,
+      freeToPlay
+    }
   })
 
-  return { allGames, allGenres }
+  return {
+    allGames,
+    allGenres,
+    variables,
+    freeToPlay,
+    setFreeToPlay,
+    date,
+    setDate
+  }
 }
 
 export default useGameFilter
