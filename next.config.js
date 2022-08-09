@@ -1,3 +1,6 @@
 module.exports = {
-  pageExtensions: ['tsx']
+  pageExtensions: ['tsx'],
+  images: {
+    domains: ['storage.googleapis.com']
+  }
 }
