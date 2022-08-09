@@ -1,16 +1,10 @@
 import qs from 'querystring'
 
 import { useQuery } from '@apollo/client'
-import {
-  Card,
-  Checkbox,
-  Container,
-  Dropdown,
-  Input,
-  Text
-} from '@nextui-org/react'
+import { Card, Checkbox, Container, Input, Text } from '@nextui-org/react'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
+import Select from 'react-select'
 
 import { GAME_FILTERS } from '~/graphql/game_filters'
 import { GAMES } from '~/graphql/games'
@@ -22,6 +16,7 @@ import {
   GamesVariables
 } from '~/graphql/types'
 import { GenresResponse } from '~/graphql/types/genres'
+import { dropdownStyles } from '~/styles/select'
 
 const GameFilter: NextPage = () => {
   const { query } = useRouter()
@@ -38,13 +33,16 @@ const GameFilter: NextPage = () => {
   const { data: genresResponse } = useQuery<GenresResponse>(ALL_GENRES)
 
   const allGenres =
-    genresResponse?.genres.data.map(genre => genre.attributes.name) || []
+    genresResponse?.genres.data.map(genre => ({
+      value: genre.attributes.name,
+      label: genre.attributes.name
+    })) || []
 
   const responseSlug =
     gameFiltersResponse?.gamesFilters?.data[0]?.attributes?.query ?? ''
 
   const parsedQuery =
-    slug === 'all'
+    slug === 'all' || !responseSlug
       ? ({} as GamesVariables)
       : (qs.parse(responseSlug || '') as GamesVariables)
 
@@ -52,8 +50,14 @@ const GameFilter: NextPage = () => {
     variables: parsedQuery
   })
 
+  if (typeof document === 'undefined') return null
   return (
     <Container
+      fluid
+      display="flex"
+      direction="column"
+      justify="center"
+      alignItems="center"
       css={{
         minHeight: '100vh'
       }}
@@ -63,52 +67,84 @@ const GameFilter: NextPage = () => {
 
       <Card
         css={{
-          maxWidth: 1080,
+          maxWidth: 1600,
           p: 40,
           gap: 20,
           justifyContent: 'space-between'
         }}
       >
         <Container fluid justify="space-between" display="flex">
-          <Dropdown>
-            <Dropdown.Button flat>Platforms</Dropdown.Button>
-            <Dropdown.Menu>
-              {['windows', 'mac_os', 'ios', 'android'].map(option => {
-                return <Dropdown.Item key={option}>{option}</Dropdown.Item>
-              })}
-            </Dropdown.Menu>
-          </Dropdown>
-          <Dropdown>
-            <Dropdown.Button flat>Status</Dropdown.Button>
-            <Dropdown.Menu>
-              {['playable', 'in_development'].map(option => {
-                return <Dropdown.Item key={option}>{option}</Dropdown.Item>
-              })}
-            </Dropdown.Menu>
-          </Dropdown>
+          <Select
+            menuPortalTarget={document.body}
+            styles={dropdownStyles}
+            isMulti
+            placeholder="Platforms"
+            options={[
+              {
+                value: 'windows',
+                label: 'Windows'
+              },
+              {
+                value: 'mac_os',
+                label: 'Mac OS'
+              },
+              {
+                value: 'ios',
+                label: 'iOS'
+              },
+              {
+                value: 'android',
+                label: 'Android'
+              }
+            ]}
+          />
+          <Select
+            menuPortalTarget={document.body}
+            styles={dropdownStyles}
+            isMulti
+            placeholder="status"
+            options={[
+              {
+                value: 'playable',
+                label: 'Playable'
+              },
+              {
+                value: 'in_development',
+                label: 'In Development'
+              }
+            ]}
+          />
 
-          <Dropdown>
-            <Dropdown.Button flat>Genre</Dropdown.Button>
-            <Dropdown.Menu>
-              {allGenres.map(genre => {
-                return <Dropdown.Item key={genre}>{genre}</Dropdown.Item>
-              })}
-            </Dropdown.Menu>
-          </Dropdown>
-
-          <Dropdown>
-            <Dropdown.Button flat>Date added</Dropdown.Button>
-            <Dropdown.Menu>
-              {[
-                'last 7 days',
-                'last 30 days',
-                'last 6 months',
-                'last 12 months'
-              ].map(option => {
-                return <Dropdown.Item key={option}>{option}</Dropdown.Item>
-              })}
-            </Dropdown.Menu>
-          </Dropdown>
+          <Select
+            menuPortalTarget={document.body}
+            styles={dropdownStyles}
+            placeholder="Date added"
+            options={[
+              {
+                value: '2022-08-01',
+                label: 'Last 7 days'
+              },
+              {
+                value: '2022-07-01',
+                label: 'Last 30 days'
+              },
+              {
+                value: '2022-01-01',
+                label: 'Last 6 months'
+              },
+              {
+                value: '2021-08-01',
+                label: 'Last 12 months'
+              }
+            ]}
+          />
+          <Select
+            isMulti
+            menuPortalTarget={document.body}
+            styles={dropdownStyles}
+            placeholder="Genres"
+            options={allGenres}
+          />
         </Container>
         <Container
           fluid
