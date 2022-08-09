@@ -11,6 +11,10 @@ interface Asset {
   height: number
   placeholder: string
 }
+
+interface Review {
+  rating: number
+}
 export interface Game {
   id: string
   name: string
@@ -19,7 +23,8 @@ export interface Game {
   freeToPlay: boolean
   releaseDate: Date
   logo: SingleContentType<Asset>
-  platforms: MultiContentType<GamePlatform>
+  platforms: GamePlatform[]
+  review: SingleContentType<Review>
   genres: MultiContentType<Genre>
 }
 
@@ -32,5 +37,6 @@ export interface GamesVariables {
   freeToPlay?: boolean
   featured?: boolean
   genres?: string[]
-  date?: Date
+  date?: string
+  rating?: number
 }

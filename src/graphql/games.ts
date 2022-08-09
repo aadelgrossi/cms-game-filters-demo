@@ -7,6 +7,7 @@ export const GAMES = gql`
     $keywords: String
     $date: DateTime
     $genres: [String!]
+    $rating: Int
   ) {
     games(
       filters: {
@@ -15,6 +16,7 @@ export const GAMES = gql`
         name: { containsi: $keywords }
         genres: { or: { name: { in: $genres } } }
         createdAt: { gte: $date }
+        review: { rating: { gt: $rating } }
       }
     ) {
       data {
@@ -34,6 +36,16 @@ export const GAMES = gql`
                 width
                 height
                 placeholder
+              }
+            }
+          }
+          platforms {
+            name
+          }
+          review {
+            data {
+              attributes {
+                rating
               }
             }
           }
