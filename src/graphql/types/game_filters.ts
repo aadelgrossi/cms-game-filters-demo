@@ -1,4 +1,4 @@
-import { ContentType } from './shared'
+import { MultiContentType } from './shared'
 
 interface GameFilter {
   slug: string
@@ -6,7 +6,7 @@ interface GameFilter {
 }
 
 export interface GameFilterResponse {
-  gamesFilters: ContentType<GameFilter>
+  gamesFilters: MultiContentType<GameFilter>
 }
 
 export interface GameFilterVariables {

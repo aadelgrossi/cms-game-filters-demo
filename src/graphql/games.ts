@@ -5,7 +5,7 @@ export const GAMES = gql`
     $freeToPlay: Boolean
     $featured: Boolean
     $keywords: String
-    $date: Date
+    $date: DateTime
     $genres: [String!]
   ) {
     games(
@@ -26,6 +26,16 @@ export const GAMES = gql`
           releaseDate
           platforms {
             name
+          }
+          logo {
+            data {
+              attributes {
+                url
+                width
+                height
+                placeholder
+              }
+            }
           }
           genres {
             data {

@@ -1,13 +1,16 @@
-import { ContentType } from './shared'
+import { Genre } from './genres'
+import { MultiContentType, SingleContentType } from './shared'
 
 export interface GamePlatform {
   name: string
 }
 
-export interface Genre {
-  name: string
+interface Asset {
+  url: string
+  width: number
+  height: number
+  placeholder: string
 }
-
 export interface Game {
   id: string
   name: string
@@ -15,12 +18,13 @@ export interface Game {
   featured: boolean
   freeToPlay: boolean
   releaseDate: Date
-  platforms: ContentType<GamePlatform>[]
-  genres: ContentType<Genre>[]
+  logo: SingleContentType<Asset>
+  platforms: MultiContentType<GamePlatform>
+  genres: MultiContentType<Genre>
 }
 
 export interface GamesResponse {
-  games: ContentType<Game>[]
+  games: MultiContentType<Game>
 }
 
 export interface GamesVariables {
@@ -28,4 +32,5 @@ export interface GamesVariables {
   freeToPlay?: boolean
   featured?: boolean
   genres?: string[]
+  date?: Date
 }

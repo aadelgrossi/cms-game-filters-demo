@@ -1,9 +1,9 @@
-import { ContentType } from './shared'
+import { MultiContentType } from './shared'
 
 export interface Genre {
   name: string
 }
 
 export interface GenresResponse {
-  genres: ContentType<Genre>
+  genres: MultiContentType<Genre>
 }
