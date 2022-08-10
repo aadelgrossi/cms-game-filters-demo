@@ -30,7 +30,9 @@ const GameFilter: NextPage = () => {
     genres,
     setGenres,
     gameStatus,
-    setGameStatus
+    setGameStatus,
+    keywords,
+    setKeywords
   } = useGameFilter()
 
   useEffect(() => {
@@ -197,6 +199,8 @@ const GameFilter: NextPage = () => {
             placeholder="Min Rating"
           />
           <Input
+            value={keywords}
+            onChange={evt => setKeywords(evt.target.value)}
             css={{ maxWidth: 300 }}
             fullWidth
             underlined

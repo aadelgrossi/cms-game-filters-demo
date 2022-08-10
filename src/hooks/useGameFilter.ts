@@ -27,6 +27,7 @@ const useGameFilter = () => {
   const [platforms, setPlatforms] = useState<string[]>()
   const [genres, setGenres] = useState<string[]>()
   const [gameStatus, setGameStatus] = useState<GameStatus>()
+  const [keywords, setKeywords] = useState('')
 
   const { data: gameFiltersResponse } = useQuery<
     GameFilterResponse,
@@ -48,11 +49,10 @@ const useGameFilter = () => {
 
   const parsedQuery = qs.parse(rawQuery || '') as Record<string, any>
 
-  const variables: GamesVariables =
+  const variables =
     slug === 'all' || !rawQuery
-      ? {}
+      ? ({} as GamesVariables)
       : {
-          ...parsedQuery,
           featured: parsedQuery.featured ? !!parsedQuery.featured : undefined,
           rating: parsedQuery.rating
             ? parseFloat(parsedQuery.rating)
@@ -84,6 +84,7 @@ const useGameFilter = () => {
       ...variables,
       date,
       status: gameStatus,
+      keywords,
       platforms: platforms?.length ? platforms : undefined,
       genres: genres?.length ? genres : undefined,
       freeToPlay
@@ -103,7 +104,9 @@ const useGameFilter = () => {
     genres,
     setGenres,
     gameStatus,
-    setGameStatus
+    setGameStatus,
+    keywords,
+    setKeywords
   }
 }
 

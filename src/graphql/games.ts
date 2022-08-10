@@ -15,14 +15,15 @@ export const GAMES = gql`
       filters: {
         freeToPlay: { eq: $freeToPlay }
         featured: { eq: $featured }
-        name: { containsi: $keywords }
         createdAt: { gte: $date }
         review: { rating: { gt: $rating } }
         status: { eq: $status }
-        and: {
-          genres: { name: { in: $genres } }
-          platforms: { name: { in: $platforms } }
-        }
+        genres: { name: { in: $genres } }
+        platforms: { name: { in: $platforms } }
+        or: [
+          { name: { containsi: $keywords } }
+          { subtitle: { containsi: $keywords } }
+        ]
       }
     ) {
       data {
