@@ -1,4 +1,4 @@
-import qs from 'querystring'
+import qs, { ParsedUrlQueryInput } from 'querystring'
 
 import { useEffect, useState } from 'react'
 
@@ -19,7 +19,7 @@ import {
 } from '~/graphql/types'
 
 const useGameFilter = () => {
-  const { query } = useRouter()
+  const { query, replace, asPath } = useRouter()
   const slug = query?.slug as string
 
   const [freeToPlay, setFreeToPlay] = useState<boolean>()
@@ -78,6 +78,21 @@ const useGameFilter = () => {
       setGameStatus(parsedQuery.status)
     }
   }, [parsedQuery, freeToPlay, date, platforms, genres, gameStatus])
+
+  useEffect(() => {
+    if (slug === 'all') {
+      const newQuery = qs.stringify({
+        slug,
+        date,
+        freeToPlay,
+        genres,
+        platforms,
+        status: gameStatus
+      })
+      replace({ query: newQuery })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [freeToPlay, date, platforms, genres, gameStatus])
 
   const { data: allGames } = useQuery<GamesResponse, GamesVariables>(GAMES, {
     variables: {
