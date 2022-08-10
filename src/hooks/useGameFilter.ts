@@ -83,11 +83,11 @@ const useGameFilter = () => {
     if (slug === 'all') {
       const newQuery = qs.stringify({
         slug,
-        date,
-        freeToPlay,
-        genres,
-        platforms,
-        status: gameStatus
+        ...(date ? { date } : undefined),
+        ...(freeToPlay ? { freeToPlay } : undefined),
+        ...(genres ? { genres } : undefined),
+        ...(platforms ? { platforms } : undefined),
+        ...(gameStatus ? { status: gameStatus } : undefined)
       })
       replace({ query: newQuery })
     }
