@@ -5,7 +5,7 @@ export const GAMES = gql`
     $freeToPlay: Boolean
     $featured: Boolean
     $keywords: String
-    $date: DateTime
+    $date: Date
     $genres: [String!]
     $platforms: [String!]
     $rating: Int
@@ -15,7 +15,7 @@ export const GAMES = gql`
       filters: {
         freeToPlay: { eq: $freeToPlay }
         featured: { eq: $featured }
-        createdAt: { gte: $date }
+        releaseDate: { gte: $date }
         review: { rating: { gt: $rating } }
         status: { eq: $status }
         genres: { name: { in: $genres } }
@@ -33,7 +33,6 @@ export const GAMES = gql`
           subtitle
           featured
           releaseDate
-          createdAt
           freeToPlay
           status
           platforms {

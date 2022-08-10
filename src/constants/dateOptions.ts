@@ -1,4 +1,4 @@
-import { startOfDay, subDays, subMonths } from 'date-fns'
+import { subDays, subMonths, format } from 'date-fns'
 
 export type DateOption = {
   value?: string
@@ -11,19 +11,19 @@ export const dateOptions: DateOption[] = [
     label: 'All time'
   },
   {
-    value: startOfDay(subDays(new Date(), 7)).toISOString(),
+    value: format(subDays(new Date(), 7), 'YYY-MM-dd'),
     label: 'Last 7 days'
   },
   {
-    value: startOfDay(subDays(new Date(), 30)).toISOString(),
+    value: format(subDays(new Date(), 30), 'YYY-MM-dd'),
     label: 'Last 30 days'
   },
   {
-    value: startOfDay(subMonths(new Date(), 6)).toISOString(),
+    value: format(subMonths(new Date(), 6), 'YYY-MM-dd'),
     label: 'Last 6 months'
   },
   {
-    value: startOfDay(subMonths(new Date(), 12)).toISOString(),
+    value: format(subMonths(new Date(), 12), 'YYY-MM-dd'),
     label: 'Last 12 months'
   }
 ]

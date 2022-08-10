@@ -100,8 +100,8 @@ const GameFilter: NextPage = () => {
                   </Text>
                 )}
                 <Text color="$gray800">
-                  Date added:{' '}
-                  {format(parseISO(game.attributes.createdAt), 'dd MMM yyyy')}
+                  Release date:{' '}
+                  {format(parseISO(game.attributes.releaseDate), 'dd MMM yyyy')}
                 </Text>
                 <Text color="$gray800">
                   Free To Play: {game.attributes.freeToPlay ? 'Yes' : 'No'}

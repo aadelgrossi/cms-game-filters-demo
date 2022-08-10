@@ -24,7 +24,7 @@ export interface Game {
   subtitle: string
   featured: boolean
   freeToPlay: boolean
-  releaseDate: Date
+  releaseDate: string
   status: GameStatus
   logo: SingleContentType<Asset>
   platforms: GamePlatform[]
