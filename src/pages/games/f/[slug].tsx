@@ -12,6 +12,7 @@ import {
   dateOptions,
   PlatformOption
 } from '~/constants'
+import { gameStatusOptions, StatusOption } from '~/constants/gameStatusOptions'
 import useGameFilter from '~/hooks/useGameFilter'
 import { dropdownStyles } from '~/styles/select'
 
@@ -27,7 +28,9 @@ const GameFilter: NextPage = () => {
     platforms,
     setPlatforms,
     genres,
-    setGenres
+    setGenres,
+    gameStatus,
+    setGameStatus
   } = useGameFilter()
 
   useEffect(() => {
@@ -57,6 +60,7 @@ const GameFilter: NextPage = () => {
       >
         {allGames?.games.data.map(game => {
           const logoData = game.attributes.logo.data
+          const rating = game.attributes.review.data?.attributes.rating
           return (
             <Container
               display="flex"
@@ -76,34 +80,38 @@ const GameFilter: NextPage = () => {
               >
                 <Text h3>{game.attributes.name}</Text>
                 <Text color="$gray700">{game.attributes.subtitle}</Text>
-                <Text color="$gray700">
+                <Text color="$gray800">
                   Genres:{' '}
                   {game.attributes.genres.data
                     .map(genre => genre.attributes.name)
                     .join(', ')}
                 </Text>
-                <Text color="$gray700">
+                <Text color="$gray800">
                   Platforms:{' '}
                   {game.attributes.platforms
                     .map(platform => platform.name)
                     .join(', ')}
                 </Text>
-                <Text color="$gray700">
-                  Rating: {game.attributes.review.data?.attributes.rating}
-                </Text>
-                <Text color="$gray700">
+                {rating && (
+                  <Text color="$gray800">
+                    Rating: {game.attributes.review.data?.attributes.rating}
+                  </Text>
+                )}
+                <Text color="$gray800">
                   Date added:{' '}
                   {format(parseISO(game.attributes.createdAt), 'dd MMM yyyy')}
                 </Text>
-                <Text color="$gray700">
+                <Text color="$gray800">
                   Free To Play: {game.attributes.freeToPlay ? 'Yes' : 'No'}
                 </Text>
+                <Text color="$gray800">Status: {game.attributes.status}</Text>
               </Col>
               {logoData && (
                 <Image
                   alt={game.attributes.name}
                   width={160}
                   height={160}
+                  layout="fixed"
                   placeholder="blur"
                   style={{
                     borderRadius: 16
@@ -141,20 +149,14 @@ const GameFilter: NextPage = () => {
             options={platformsOptions}
           />
           <Select
+            value={gameStatusOptions.find(
+              option => option.value === gameStatus
+            )}
+            onChange={item => setGameStatus((item as StatusOption)?.value)}
             menuPortalTarget={document.body}
             styles={dropdownStyles}
-            isMulti
-            placeholder="status"
-            options={[
-              {
-                value: 'playable',
-                label: 'Playable'
-              },
-              {
-                value: 'in_development',
-                label: 'In Development'
-              }
-            ]}
+            placeholder="Status"
+            options={gameStatusOptions}
           />
 
           <Select

@@ -1,3 +1,5 @@
+import { GameStatus } from '~/constants/gameStatusOptions'
+
 import { Genre } from './genres'
 import { MultiContentType, SingleContentType } from './shared'
 
@@ -23,6 +25,7 @@ export interface Game {
   featured: boolean
   freeToPlay: boolean
   releaseDate: Date
+  status: GameStatus
   logo: SingleContentType<Asset>
   platforms: GamePlatform[]
   review: SingleContentType<Review>
@@ -39,6 +42,7 @@ export interface GamesVariables {
   featured?: boolean
   genres?: string[]
   platforms?: string[]
+  status?: GameStatus
   date?: string
   rating?: number
 }

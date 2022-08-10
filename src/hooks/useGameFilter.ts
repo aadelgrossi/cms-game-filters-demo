@@ -6,6 +6,7 @@ import { useQuery } from '@apollo/client'
 import { parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
 
+import { GameStatus } from '~/constants'
 import { GAME_FILTERS } from '~/graphql/game_filters'
 import { GAMES } from '~/graphql/games'
 import { ALL_GENRES } from '~/graphql/genres'
@@ -25,6 +26,7 @@ const useGameFilter = () => {
   const [date, setDate] = useState<string>()
   const [platforms, setPlatforms] = useState<string[]>()
   const [genres, setGenres] = useState<string[]>()
+  const [gameStatus, setGameStatus] = useState<GameStatus>()
 
   const { data: gameFiltersResponse } = useQuery<
     GameFilterResponse,
@@ -72,12 +74,16 @@ const useGameFilter = () => {
     if (parsedQuery.genres && genres === undefined) {
       setGenres(parsedQuery.genres)
     }
-  }, [parsedQuery, freeToPlay, date, platforms, genres])
+    if (parsedQuery.status && gameStatus === undefined) {
+      setGameStatus(parsedQuery.status)
+    }
+  }, [parsedQuery, freeToPlay, date, platforms, genres, gameStatus])
 
   const { data: allGames } = useQuery<GamesResponse, GamesVariables>(GAMES, {
     variables: {
       ...variables,
       date,
+      status: gameStatus,
       platforms: platforms?.length ? platforms : undefined,
       genres: genres?.length ? genres : undefined,
       freeToPlay
@@ -95,7 +101,9 @@ const useGameFilter = () => {
     platforms,
     setPlatforms,
     genres,
-    setGenres
+    setGenres,
+    gameStatus,
+    setGameStatus
   }
 }
 

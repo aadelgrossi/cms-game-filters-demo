@@ -9,6 +9,7 @@ export const GAMES = gql`
     $genres: [String!]
     $platforms: [String!]
     $rating: Int
+    $status: String
   ) {
     games(
       filters: {
@@ -17,6 +18,7 @@ export const GAMES = gql`
         name: { containsi: $keywords }
         createdAt: { gte: $date }
         review: { rating: { gt: $rating } }
+        status: { eq: $status }
         and: {
           genres: { name: { in: $genres } }
           platforms: { name: { in: $platforms } }
@@ -32,6 +34,7 @@ export const GAMES = gql`
           releaseDate
           createdAt
           freeToPlay
+          status
           platforms {
             name
           }
